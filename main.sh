@@ -2,17 +2,6 @@
 
 echo "INFO     | Checking if terraform file(s) are correctly formatted."
 
-# check if variable is array, returns 0 on success, 1 otherwise
-# @param: mixed 
-IS_ARRAY()
-{   # Detect if arg is an array, returns 0 on sucess, 1 otherwise
-    [ -z "$1" ] && return 1
-    if [ -n "$BASH" ]; then
-        declare -p ${1} 2> /dev/null | grep 'declare \-a' >/dev/null && return 0
-    fi
-    return 1
-}
-
 # Optional inputs
 
 # Validate input comment.
@@ -59,12 +48,12 @@ else
 fi
 
 # Gather the output of `terraform fmt`.
-output=$(terraform fmt -list=false -check ${recursive} ${target})
+output=$(terraform fmt -list=false -check ${recursive} "${target}")
 exit_code=${?}
 
 # Output informations for future use.
-echo "exitcode=$exit_code" >> $GITHUB_OUTPUT
-echo "output=$output" >> $GITHUB_OUTPUT
+echo "exitcode=$exit_code" >> "$GITHUB_OUTPUT"
+echo "output=$output" >> "$GITHUB_OUTPUT"
 
 # Exit Code: 0
 # Meaning: All files formatted correctly.
@@ -83,7 +72,7 @@ if [[ $exit_code -eq 1 || $exit_code -eq 2 ]]; then
     fi
     # Add output of `terraform fmt` command.
     echo -e "ERROR    | Terraform fmt output:"
-    echo -e $output
+    echo -e "$output"
     pr_comment="### Terraform Format Failed
 <details><summary>Show Output</summary>
 <p>
@@ -123,7 +112,7 @@ $this_file_diff"
         echo -e "$output"
         echo "INFO     | Terraform file(s) are being formatted."
         # Gather the output of `terraform fmt`.
-        format_output=$(terraform fmt ${recursive} ${target} -write=true)
+        format_output=$(terraform fmt ${recursive} "${target}" -write=true)
         format_exit_code=${?}
         if [[ $format_exit_code -eq 0 ]]; then
             echo "INFO     | Terraform Format Succeeded."
@@ -154,7 +143,7 @@ if [[ $INPUT_COMMENT == true ]]; then
     if [[ "$GITHUB_EVENT_NAME" != "pull_request" && "$GITHUB_EVENT_NAME" != "issue_comment" ]]; then
         echo "WARNING  | $GITHUB_EVENT_NAME event does not relate to a pull request."
     else
-        if [[ -z GITHUB_TOKEN ]]; then
+        if [[ -z $GITHUB_TOKEN ]]; then
             echo "WARNING  | GITHUB_TOKEN not defined. Pull request comment is not possible without a GitHub token."
         else
             # Look for an existing pull request comment and delete
@@ -170,7 +159,10 @@ if [[ $INPUT_COMMENT == true ]]; then
             pr_comment_uri=$(jq -r ".repository.issue_comment_url" "$GITHUB_EVENT_PATH" | sed "s|{/number}||g")
             pr_comment_id=$(curl -sS -H "$auth_header" -H "$accept_header" -L "$pr_comments_url" | jq '.[] | select(.body|test ("### Terraform Format")) | .id')
             if [ "$pr_comment_id" ]; then
-                if [[ $(IS_ARRAY $pr_comment_id)  -ne 0 ]]; then
+                if (( $(grep -c . <<<"${pr_comment_id}") > 1 )); then
+                    echo "WARNING  | Pull request contain many comments with \"### Terraform Format\" in the body."
+                    echo "WARNING  | Existing pull request comments won't be delete."
+                else
                     echo "INFO     | Found existing pull request comment: $pr_comment_id. Deleting."
                     pr_comment_url="$pr_comment_uri/$pr_comment_id"
                     {
@@ -179,9 +171,6 @@ if [[ $INPUT_COMMENT == true ]]; then
                     {
                         echo "ERROR    | Unable to delete existing comment in pull request."
                     }
-                else
-                    echo "WARNING  | Pull request contain many comments with \"### Terraform Format\" in the body."
-                    echo "WARNING  | Existing pull request comments won't be delete."
                 fi
             else
                 echo "INFO     | No existing pull request comment found."
@@ -207,7 +196,7 @@ if [[ $INPUT_CHECK == true ]]; then
     exit $exit_code
 else
     if [[ $exit_code -eq 3 ]]; then
-        exit $format_exit_code
+        exit "$format_exit_code"
     else 
         exit $exit_code
     fi

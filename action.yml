@@ -28,7 +28,7 @@ outputs:
     description: 'The exit code of the Terraform fmt command.'
     value: ${{ steps.BashScript.Outputs.exitcode }}
   output:
-    description: 'The Terraform fmt output.' 
+    description: 'The Terraform fmt output.'
     value: ${{ steps.BashScript.Outputs.output }}
 
 runs:
