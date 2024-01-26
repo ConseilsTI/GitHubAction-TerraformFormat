@@ -24,11 +24,11 @@ A comment can be added to the pull request in case of error related to the `terr
 
 * `target`
 
-  By default, fmt scans the current directory for configuration files. If you provide a file or a directory for the `target` argument, then fmt will scan that file or that directory instead. 
- 
-  - Type: string
-  - Optional
-  - Default: The current directory
+  By default, fmt scans the current directory for configuration files. If you provide a file or a directory for the `target` argument, then fmt will scan that file or that directory instead.
+
+  * Type: string
+  * Optional
+  * Default: The current directory
 
   ```yaml
   with:
@@ -36,20 +36,20 @@ A comment can be added to the pull request in case of error related to the `terr
   ```
 
 * `check`
-    
+
   By default, fmt checks if the input is properly formatted. If you set it to false, code will be formated in a canonical format.
 
-  - Type: boolean
-  - Optional
-  - Default: true
- 
+  * Type: boolean
+  * Optional
+  * Default: true
+
 * `recursive`
 
   Process files in subdirectories. By default, all subdirectories are process.
 
-  - Type: boolean
-  - Optional
-  - Default: true
+  * Type: boolean
+  * Optional
+  * Default: true
 
   ```yaml
   with:
@@ -60,9 +60,9 @@ A comment can be added to the pull request in case of error related to the `terr
 
   Whether or not to comment on GitHub pull requests.
 
-  - Type: boolean
-  - Optional
-  - Default: false
+  * Type: boolean
+  * Optional
+  * Default: false
 
   ```yaml
   with:
@@ -73,17 +73,17 @@ A comment can be added to the pull request in case of error related to the `terr
 
 * `exitcode`
 
-  The exit code of the Terraform fmt command. 
+  The exit code of the Terraform fmt command.
 
 * `output`
 
-  The Terraform fmt output. 
+  The Terraform fmt output.
 
 ## Environment Variables
 
 * `GITHUB_TOKEN`
 
-  The GitHub authorization token to use to add a comment to a PR. 
+  The GitHub authorization token to use to add a comment to a PR.
   The token provided by GitHub Actions can be used - it can be passed by
   using the `${{ secrets.GITHUB_TOKEN }}` expression, e.g.
 
