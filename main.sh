@@ -112,7 +112,7 @@ $this_file_diff"
         echo -e "$output"
         echo "INFO     | Terraform file(s) are being formatted."
         # Gather the output of `terraform fmt`.
-        format_output=$(terraform fmt ${recursive} "${target}" -write=true)
+        format_output=$(terraform fmt ${recursive} -write=true "${target}")
         format_exit_code=${?}
         if [[ $format_exit_code -eq 0 ]]; then
             echo "INFO     | Terraform Format Succeeded."
