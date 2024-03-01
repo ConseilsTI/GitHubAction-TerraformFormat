@@ -29,9 +29,11 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Lint Code Base
-        uses: super-linter/super-linter@v5
+        uses: super-linter/super-linter@v6
         env:
           VALIDATE_ALL_CODEBASE: false
           # Need to define main branch as default
@@ -40,6 +42,16 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # The following linter types will be enabled:
           VALIDATE_BASH: true
+          VALIDATE_BASH_EXEC: true
           VALIDATE_GITHUB_ACTIONS: true
+          VALIDATE_JSON: true
           VALIDATE_MARKDOWN: true
+          VALIDATE_POWERSHELL: true
+          VALIDATE_TERRAFORM_TFLINT: true
           VALIDATE_YAML: true
+          # Additional settings:
+          # If a shell script is not executable, the bash-exec
+          # linter will report an error when set to true
+          ERROR_ON_MISSING_EXEC_BIT: true
+          # Exclude README.md file because it is generated
+          FILTER_REGEX_EXCLUDE: README.md
